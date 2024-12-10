@@ -28,7 +28,7 @@ const TransparentImage = ({ src, alt, width, height, top, bottom, right, left, .
       overflow: 'hidden',
       background: 'transparent'
     }}>
-      <Image src={src} alt={alt} layout="fill" objectFit="cover" {...props} />
+      <Image src={src} alt={alt} fill style={{ objectFit: 'cover' }} {...props} />
     </div>
   );
 };

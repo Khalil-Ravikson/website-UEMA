@@ -39,7 +39,7 @@ const GradientBackground = () => (
       height="31vw"    // Altura personalizada
       />
       <TransparentImage src = "/images/iori-Photoroom.png" 
-      alt="anime image"
+      alt="iori"
       top="27vh"       // Define a distância do topo
       bottom="10vw"       
       left="62vw"      // Define a distância da esquerda
