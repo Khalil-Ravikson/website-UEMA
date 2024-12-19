@@ -1,4 +1,4 @@
-import LoginForm from "./LoginForm";
+
 
 const CenteredBox = () => (
     <div style={{
@@ -10,7 +10,7 @@ const CenteredBox = () => (
         left: 0, // Posiciona no lado esquerdo
         top: 0, // Fixa no topo
       }}>
-        <LoginForm/>
+        
       </div>
 
         

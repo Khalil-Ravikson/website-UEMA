@@ -4,6 +4,7 @@ import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form'; // Importando React Hook Form
 import { loginUser } from '../services/api'; // Importando a função de login da api.ts
 import { FaUser, FaLock } from 'react-icons/fa'; // Ícones
+import Link from 'next/link';
 
 interface LoginFormData {
   username: string;
@@ -131,12 +132,16 @@ const LoginForm: React.FC = () => {
           onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#5a0ca3'}
           onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#6a11cb'}
         >
-          Entrar
+          <Link style={{ color: '#6a11cb' }} href="loginCadastro\cadastro\"> Entrar </Link> 
         </button>
       </form>
 
       <p style={{ fontSize: '14px', color: '#777' }}>
-        Não tem uma conta? <a href="#" style={{ color: '#6a11cb' }}>Cadastre-se</a>
+        Não tem uma conta? <Link style={{ color: '#6a11cb' }} href="loginCadastro\"> 
+        
+          Cadastre-se
+           
+        </Link>
       </p>
     </div>
   );
