@@ -12,6 +12,9 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        sans: ["GeistSans", "sans-serif"], // Adicione a fonte personalizada
+      },
     },
   },
   plugins: [],

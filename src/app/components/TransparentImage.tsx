@@ -3,7 +3,7 @@ import Image, { ImageProps } from 'next/image';
 interface TransparentImageProps extends Omit<ImageProps, 'src' | 'width' | 'height'> {
   src: string;
   alt: string;
-  width?: string;   // Agora é apenas para o contêiner div
+  width?: string;
   height?: string;
   top?: number | string;
   bottom?: number | string;
@@ -11,24 +11,39 @@ interface TransparentImageProps extends Omit<ImageProps, 'src' | 'width' | 'heig
   left?: number | string;
 }
 
-const TransparentImage = ({ src, alt, width, height, top, bottom, right, left, ...props }: TransparentImageProps) => {
+const TransparentImage = ({ 
+  src, 
+  alt, 
+  width = '40vw', 
+  height = '80vh', 
+  top = 'auto', 
+  bottom = 'auto', 
+  right = 'auto', 
+  left = 'auto', 
+  ...props 
+}: TransparentImageProps) => {
+  // Create dynamic styles for positioning
+  const positionStyle = {
+    top: top !== 'auto' ? top : undefined,
+    bottom: bottom !== 'auto' ? bottom : undefined,
+    right: right !== 'auto' ? right : undefined,
+    left: left !== 'auto' ? left : undefined,
+    width,
+    height,
+  };
+
   return (
-    <div style={{
-      width: width || '40vw',  // Aplicado no contêiner
-      height: height || '80vh',
-      position: 'absolute',
-      top: top ?? 'auto',
-      bottom: bottom ?? 'auto',
-      right: right ?? 'auto',
-      left: left ?? 'auto',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: '8px',
-      overflow: 'hidden',
-      background: 'transparent'
-    }}>
-      <Image src={src} alt={alt} fill style={{ objectFit: 'cover' }} {...props} />
+    <div 
+      className="absolute flex justify-center items-center rounded-lg overflow-hidden bg-transparent"
+      style={positionStyle}
+    >
+      <Image 
+        src={src} 
+        alt={alt} 
+        fill 
+        className="object-cover"
+        {...props} 
+      />
     </div>
   );
 };

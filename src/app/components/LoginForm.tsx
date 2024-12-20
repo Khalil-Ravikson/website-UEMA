@@ -14,11 +14,13 @@ interface LoginFormData {
 const LoginForm: React.FC = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>();
 
+  
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     try {
       const response = await loginUser(data.username, data.password);
       if (response.status === 'success') {
         console.log('Login bem-sucedido:', response.user);
+        window.location.href = 'loginCadastro/cadastro'; // Redireciona para a página principal
       } else {
         console.error('Erro:', response.message);
       }
@@ -28,116 +30,60 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
-      padding: '20px',
-      backgroundColor: '#f4f4f4',
-      fontFamily: 'Roboto, sans-serif',
-    }}>
-      <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-        <h2 style={{
-          color: '#333',
-          marginBottom: '15px',
-          fontWeight: '600',
-          fontSize: '26px',
-          letterSpacing: '0.5px',
-        }}>
+    <div className="flex flex-col justify-center items-center min-h-screen p-5 bg-gray-100 font-sans">
+      <div className="text-center mb-8">
+        <h2 className="text-2xl font-semibold text-gray-800 tracking-wide">
           Casadas.com
         </h2>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} style={{
-        display: 'flex',
-        flexDirection: 'column',
-        width: '100%',
-        maxWidth: '400px',
-        padding: '20px',
-        backgroundColor: 'white',
-        borderRadius: '8px',
-        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-      }}>
+      <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
         {/* Campo de usuário */}
-        <div style={{ position: 'relative', marginBottom: '20px' }}>
-          <FaUser style={{
-            position: 'absolute',
-            top: '50%',
-            left: '15px',
-            transform: 'translateY(-50%)',
-            fontSize: '20px',
-            color: '#6a11cb',
-          }} />
+        <div className="relative mb-5">
+          <FaUser className="absolute top-1/2 left-3 -translate-y-1/2 text-xl text-purple-600" />
           <input
             type="text"
             {...register('username', { required: 'Nome de usuário é obrigatório' })}
             placeholder="Nome de usuário"
-            style={{
-              padding: '12px 20px',
-              paddingLeft: '40px',
-              borderRadius: '5px',
-              border: errors.username ? '1px solid red' : '1px solid #ccc',
-              fontSize: '16px',
-              width: '100%',
-              transition: 'border-color 0.3s, background-color 0.3s',
-            }}
+            className={`w-full pl-10 pr-3 py-3 rounded-md border text-black ${
+              errors.username ? 'border-red-500' : 'border-gray-300'
+            } text-base transition-all focus:outline-none focus:ring-2 focus:ring-purple-500`}
+          
           />
-          {errors.username && <p style={{ color: 'red', fontSize: '12px' }}>{errors.username.message}</p>}
+          {errors.username && (<p className="mt-1 text-xs text-red-500">{errors.username.message}</p>)}
         </div>
 
         {/* Campo de senha */}
-        <div style={{ position: 'relative', marginBottom: '20px' }}>
-          <FaLock style={{
-            position: 'absolute',
-            top: '50%',
-            left: '15px',
-            transform: 'translateY(-50%)',
-            fontSize: '20px',
-            color: '#6a11cb',
-          }} />
+        <div className="relative mb-5">
+          <FaLock className="absolute top-1/2 left-3 -translate-y-1/2 text-xl text-purple-600"  />
           <input
             type="password"
             {...register('password', { required: 'Senha é obrigatória' })}
             placeholder="Senha"
-            style={{
-              padding: '12px 20px',
-              paddingLeft: '40px',
-              borderRadius: '5px',
-              border: errors.password ? '1px solid red' : '1px solid #ccc',
-              fontSize: '16px',
-              width: '100%',
-              transition: 'border-color 0.3s, background-color 0.3s',
-            }}
+            className={`w-full pl-10 pr-3 py-3 rounded-md border text-black ${
+              errors.password ? 'border-red-500' : 'border-gray-300'
+            } text-base transition-all focus:outline-none focus:ring-2 focus:ring-purple-500`}
+          
           />
-          {errors.password && <p style={{ color: 'red', fontSize: '12px' }}>{errors.password.message}</p>}
+          {errors.password &&(<p className="mt-1 text-xs text-red-500">{errors.password.message}</p>) }
         </div>
 
         {/* Botão de login */}
         <button
           type="submit"
-          style={{
-            padding: '12px 20px',
-            backgroundColor: '#6a11cb',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            fontSize: '16px',
-            fontWeight: 'bold',
-            transition: 'background-color 0.3s, transform 0.3s',
-            marginBottom: '10px',
-          }}
+          className="w-full py-3 px-4 mb-3 bg-purple-600 hover:bg-purple-700 
+                     text-white font-semibold rounded-md transition-colors 
+                     duration-300 focus:outline-none focus:ring-2 
+                     focus:ring-purple-500 focus:ring-offset-2"
           onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#5a0ca3'}
           onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#6a11cb'}
         >
-          <Link style={{ color: '#6a11cb' }} href="loginCadastro\cadastro\"> Entrar </Link> 
+          ENTRAR 
         </button>
       </form>
 
-      <p style={{ fontSize: '14px', color: '#777' }}>
-        Não tem uma conta? <Link style={{ color: '#6a11cb' }} href="loginCadastro\"> 
+      <p className="mt-4 text-sm text-gray-600">
+        Não tem uma conta? <Link className="text-purple-600 hover:text-purple-700" href="loginCadastro\"> 
         
           Cadastre-se
            
