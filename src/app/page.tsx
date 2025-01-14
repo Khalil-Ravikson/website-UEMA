@@ -1,52 +1,39 @@
-'use client'
-import CenteredBox from "./components/CenteredBox";
-import GradientBackground from "./components/GradientBackground";
-import ImageBox from "./components/ImageBox";
-import LoginForm from "./components/LoginForm";
-import TransparentImage from "./components/TransparentImage";
+'use client';
 
-
+import { useRouter } from 'next/navigation';  // Usando o hook correto para o diretório app
+import LoginForm from './components/LoginForm';// Certifique-se de importar o LoginForm corretamente
+import { useAuth } from './context/AuthContext';  // Importando o hook de autenticação
+import { useEffect, useState } from 'react';
 
 export default function Home() {
-  return (
-    <div>
-        <GradientBackground/>
-        <div>
-      
+  const { isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
+  const [mounted, setMounted] = useState(false);
 
-      {/* Conteúdo opcional */}
-      
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-      <div>{<ImageBox />}</div>
-      <TransparentImage src="/images/anime.png"
-        alt="anime image"
-        top="17vh" // Define a distância do topo
-        bottom="10vh"
-        left="54vw" // Define a distância da esquerda
-        width="20vw" // Largura personalizada
-        height="70vh" // Altura personalizada
-      />
-      <TransparentImage src="/images/578-5786396_akeno-dxd-hentai-hd-png-download.png"
-        alt="anime image"
-        top="10vh" // Define a distância do topo
-        bottom="10vh"
-        left="72vw" // Define a distância da esquerda
-        width="27vw" // Largura personalizada
-        height="31vw" // Altura personalizada
-      />
-      <TransparentImage src="/images/iori-Photoroom.png"
-        alt="iori"
-        top="27vh" // Define a distância do topo
-        bottom="10vw"
-        left="62vw" // Define a distância da esquerda
-        width="26vw" // Largura personalizada
-        height="60vh" // Altura personalizada
-      />
-    </div><div className="left-aligned w-1/2 h-screen bg-white/80 shadow-md fixed left-0 top-0"
-      
-     >
-        <LoginForm />
+  useEffect(() => {
+    if (mounted && isAuthenticated && !isLoading) {
+      router.push('/home');
+    }
+  }, [isAuthenticated, isLoading, router, mounted]);
+
+  if (!mounted || isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600" />
       </div>
+    );
+  }
+  // Se o usuário não estiver autenticado, exibe o formulário de login
+  return (
+    
+    <div className="left-aligned w-1/2 h-screen bg-white/80 shadow-md fixed left-0 top-0">
+      <LoginForm />
     </div>
+   
+
   );
 }

@@ -4,4 +4,6 @@ export type PostComment = {
     name: string;
     email: string;
     body: string;
+    avatar?: string;
+    image?: string;
   };

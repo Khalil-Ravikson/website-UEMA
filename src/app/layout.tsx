@@ -1,5 +1,9 @@
+
 import type { Metadata } from "next";
 import "./globals.css";
+
+
+import ClientLayout from "./ClientLayout";
 
 export const metadata: Metadata = {
   title: "LOGIN",
@@ -13,8 +17,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="font-sans antialiased">
-        {children}
+      <body suppressHydrationWarning={true} className="font-sans antialiased">
+      <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );

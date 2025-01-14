@@ -1,4 +1,6 @@
 // src/services/api.ts
+'use client';
+
 
 import axios from 'axios';
 import { PostComment } from '../types/PostComment ';

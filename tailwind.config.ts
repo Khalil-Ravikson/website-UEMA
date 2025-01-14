@@ -13,9 +13,14 @@ export default {
         foreground: "var(--foreground)",
       },
       fontFamily: {
-        sans: ["GeistSans", "sans-serif"], // Adicione a fonte personalizada
+        sans: [ "sans-serif"], // Adicione a fonte personalizada
       },
     },
   },
-  plugins: [],
+  rules: {
+    "@typescript-eslint/no-require-imports": "error"
+  },
+  plugins: [
+
+  ],
 } satisfies Config;

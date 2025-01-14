@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import axios from "axios";
 
 export type PostComment = {
   postId: number;
@@ -12,16 +13,19 @@ export type PostComment = {
 const CommentForm: React.FC = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<PostComment>();
 
-  const onSubmit: SubmitHandler<PostComment> = (data) => {
-    console.log("Form Data:", data);
+  const onSubmit: SubmitHandler<PostComment> = async (data) => {
+    try {
+      // Fazendo a requisição POST com axios
+      const response = await axios.post("https://jsonplaceholder.typicode.com/comments", data);
+
+      console.log("Comentário enviado com sucesso:", response.data);
+    } catch (error) {
+      console.error("Erro ao enviar o comentário:", error);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4 bg-gray-100 rounded-md">
-      <div>
-
-       
-      </div>
       <div>
         <label htmlFor="name" className="block text-sm font-medium">NOME</label>
         <input

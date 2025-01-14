@@ -1,10 +1,15 @@
+// components/LoginForm.tsx
 'use client';
 
-import React from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form'; // Importando React Hook Form
-import { loginUser } from '../services/api'; // Importando a função de login da api.ts
-import { FaUser, FaLock } from 'react-icons/fa'; // Ícones
+import React, { useEffect, useState } from 'react';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { loginUser } from '../services/api';
+import { FaUser, FaLock } from 'react-icons/fa';
 import Link from 'next/link';
+import { useAuth } from '../context/AuthContext';
+import { useRouter } from 'next/navigation';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 interface LoginFormData {
   username: string;
@@ -12,20 +17,42 @@ interface LoginFormData {
 }
 
 const LoginForm: React.FC = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>();
+  const { register, handleSubmit, formState: { errors }, setError } = useForm<LoginFormData>();
+  const { login, isAuthenticated } = useAuth();
+  const router = useRouter();
 
-  
+  // Adicionar verificação de autenticação
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && isAuthenticated) {
+      router.push('/home');
+    }
+  }, [isAuthenticated, router, mounted]);
+
+  if (!mounted) return null;
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     try {
       const response = await loginUser(data.username, data.password);
-      if (response.status === 'success') {
-        console.log('Login bem-sucedido:', response.user);
-        window.location.href = 'loginCadastro/cadastro'; // Redireciona para a página principal
+
+      if (response.status === 'success' && response.user) {
+        login(response.user);
+        // Removi o router.push daqui pois o useEffect já cuida do redirecionamento
       } else {
-        console.error('Erro:', response.message);
+        setError('root', {
+          type: 'manual',
+          message: response.message || 'Erro ao fazer login. Verifique suas credenciais.'
+        });
       }
     } catch (error) {
-      console.error('Erro ao fazer login:', error);
+      setError('root', {
+        type: 'manual',
+        message: 'Erro ao conectar ao servidor. Tente novamente mais tarde.'
+      });
     }
   };
 
@@ -33,7 +60,7 @@ const LoginForm: React.FC = () => {
     <div className="flex flex-col justify-center items-center min-h-screen p-5 bg-gray-100 font-sans">
       <div className="text-center mb-8">
         <h2 className="text-2xl font-semibold text-gray-800 tracking-wide">
-          Casadas.com
+          SEJA BEM VINDO !!!!
         </h2>
       </div>
 
@@ -48,14 +75,13 @@ const LoginForm: React.FC = () => {
             className={`w-full pl-10 pr-3 py-3 rounded-md border text-black ${
               errors.username ? 'border-red-500' : 'border-gray-300'
             } text-base transition-all focus:outline-none focus:ring-2 focus:ring-purple-500`}
-          
           />
           {errors.username && (<p className="mt-1 text-xs text-red-500">{errors.username.message}</p>)}
         </div>
 
         {/* Campo de senha */}
         <div className="relative mb-5">
-          <FaLock className="absolute top-1/2 left-3 -translate-y-1/2 text-xl text-purple-600"  />
+          <FaLock className="absolute top-1/2 left-3 -translate-y-1/2 text-xl text-purple-600" />
           <input
             type="password"
             {...register('password', { required: 'Senha é obrigatória' })}
@@ -63,30 +89,33 @@ const LoginForm: React.FC = () => {
             className={`w-full pl-10 pr-3 py-3 rounded-md border text-black ${
               errors.password ? 'border-red-500' : 'border-gray-300'
             } text-base transition-all focus:outline-none focus:ring-2 focus:ring-purple-500`}
-          
           />
-          {errors.password &&(<p className="mt-1 text-xs text-red-500">{errors.password.message}</p>) }
+          {errors.password && (<p className="mt-1 text-xs text-red-500">{errors.password.message}</p>)}
         </div>
+
+        {/* Erro geral */}
+        {errors.root && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            {errors.root.message}
+          </div>
+        )}
 
         {/* Botão de login */}
         <button
           type="submit"
-          className="w-full py-3 px-4 mb-3 bg-purple-600 hover:bg-purple-700 
-                     text-white font-semibold rounded-md transition-colors 
-                     duration-300 focus:outline-none focus:ring-2 
-                     focus:ring-purple-500 focus:ring-offset-2"
-          onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#5a0ca3'}
-          onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#6a11cb'}
+          className="w-full py-3 px-4 mb-3 bg-purple-600 hover:bg-purple-700
+                    text-white font-semibold rounded-md transition-colors
+                    duration-300 focus:outline-none focus:ring-2
+                    focus:ring-purple-500 focus:ring-offset-2"
         >
-          ENTRAR 
+          ENTRAR
         </button>
       </form>
 
       <p className="mt-4 text-sm text-gray-600">
-        Não tem uma conta? <Link className="text-purple-600 hover:text-purple-700" href="loginCadastro\"> 
-        
+        Não tem uma conta?{' '}
+        <Link className="text-purple-600 hover:text-purple-700" href="/home/loginCadastro/cadastro">
           Cadastre-se
-           
         </Link>
       </p>
     </div>

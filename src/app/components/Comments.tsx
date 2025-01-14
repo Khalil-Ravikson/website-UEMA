@@ -1,18 +1,22 @@
-// src/components/Comments.tsx
-
 import React, { useState } from 'react';
 import { useFetchComments } from '../hooks/useFetchComments';
 import { Pagination } from './Pagination';
-import { PostComment } from '../types/PostComment ';
 
+import Image from 'next/image';
+import { PostComment } from '../types/PostComment ';
 
 const Comments: React.FC = () => {
   const { comments, loading } = useFetchComments();
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const [expandedPostId, setExpandedPostId] = useState<PostComment['id'] | null>(null);
+  const itemsPerPage = 6;
+
+  const handleExpandPost = (id: PostComment['id']) => {
+    setExpandedPostId(expandedPostId === id ? null : id);
+  };
 
   if (loading) {
-    return <p style={{ textAlign: 'center' }}>Carregando...</p>;
+    return <p className="text-center text-gray-500">Carregando...</p>;
   }
 
   const paginatedComments = comments.slice(
@@ -21,34 +25,72 @@ const Comments: React.FC = () => {
   );
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Comentários</h2>
-      <div>
-        {paginatedComments.map((comment: PostComment) => (
+    <div className="p-5 font-sans">
+      <h2 className="text-center text-2xl font-semibold mb-6 text-gray-700">Comentários</h2>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {paginatedComments.map((comment) => (
           <div
             key={comment.id}
-            style={{
-              marginBottom: '15px',
-              padding: '10px',
-              border: '1px solid #ccc',
-              borderRadius: '5px',
-              backgroundColor: '#f9f9f9',
-            }}
+            className="p-4 border border-gray-300 rounded-md bg-gray-50 shadow-sm flex flex-col"
           >
-            <h4 style={{ marginBottom: '5px', color: '#333' }}>{comment.name}</h4>
-            <p style={{ marginBottom: '5px', color: '#555' }}>
-              <strong>Email:</strong> {comment.email}
-            </p>
-            <p style={{ color: '#666' }}>{comment.body}</p>
+            {/* Imagem do Post - Agora no topo */}
+            <div className="w-full aspect-video mb-4 relative overflow-hidden rounded-md">
+              <Image
+                src={comment.image || "/images/default-featured-image.jpg"}
+                alt="Post image"
+                fill
+                className="object-cover"
+              />
+            </div>
+
+            {/* Autor e Email - Layout melhorado */}
+            <div className="flex items-start space-x-3 mb-4">
+              <div className="flex-shrink-0 w-12 h-12 relative">
+                <Image
+                  src={comment.avatar || "/images/simple-user-default-icon-free-png.webp"}
+                  alt={comment.name}
+                  fill
+                  className="rounded-full object-cover border border-gray-200"
+                />
+              </div>
+              <div className="min-w-0 flex-1"> {/* Permite que o texto quebre adequadamente */}
+                <h4 className="text-lg font-medium text-gray-800 truncate">{comment.name}</h4>
+                <p className="text-sm text-gray-600 truncate">{comment.email}</p>
+              </div>
+            </div>
+
+            {/* Corpo do Comentário */}
+            <div className="flex-1">
+              <div
+                className={`text-gray-700 ${
+                  expandedPostId !== comment.id && "line-clamp-3"
+                }`}
+              >
+                {comment.body}
+              </div>
+              
+              {/* Botão Ver Mais */}
+              {comment.body.length > 150 && (
+                <button
+                  onClick={() => handleExpandPost(comment.id)}
+                  className="mt-2 text-blue-500 hover:text-blue-600 font-medium text-sm"
+                >
+                  {expandedPostId === comment.id ? "Ver menos" : "Ver mais"}
+                </button>
+              )}
+            </div>
           </div>
         ))}
       </div>
-      <Pagination
-        currentPage={currentPage}
-        totalItems={comments.length}
-        itemsPerPage={itemsPerPage}
-        onPageChange={setCurrentPage}
-      />
+      
+      <div className="mt-8">
+        <Pagination
+          currentPage={currentPage}
+          totalItems={comments.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
+      </div>
     </div>
   );
 };
